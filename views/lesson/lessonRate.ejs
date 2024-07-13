@@ -1,0 +1,72 @@
+<%- include('../partial/head.ejs') %>
+
+<link rel="stylesheet" href="/css/survey.css" />
+<link rel="stylesheet" href="/css/toastify.min.css" />
+<script lang="text/javascript" src="/library/jquery.min.js"> </script>
+<script lang="text/javascript" src="/library/survey.jquery.min.js"> </script>
+<script lang="text/javascript" src="/library/survey.jquery.theme.index.min.js"> </script>
+<script lang="text/javascript" src="/library/toastify-js.js"> </script>
+
+  </head>
+
+  <body class="container border border-info ">
+    <%- include('../partial/navBar.ejs') %>
+
+    <h2 class="text-center" >
+        <%= lessn.title %>
+    </h2>
+    <div class="container" id="surveyElement" >
+        
+    </div>
+
+
+    <script>
+        //Survey.StylesManager.applyTheme('modern')
+       // var survey = new Survey.Model( <%#= JSON.stringify(lessn.survey) %> );
+       //var surveyElement = <%#- temp %> ;
+      /*  let s = <%#- temp %> ;
+       var survey = new Survey.Model(s); */
+    
+       const survey = new Survey.Model(<%- temp %>);
+      
+       survey.onComplete.add(function (result) {
+        console.log(JSON.stringify(result.data, null, 3));
+        $.ajax({
+            url: '/api/lesson/<%= lessn.id %>/rate' ,
+            type: 'POST',
+            data: JSON.stringify(result.data),
+            contentType: 'application/json' ,
+            success: function (response) {
+                console.log(response)
+                Toastify({
+                        text: response.message || 'شكراً لك على التقييم',
+                        duration: 3000,
+                        close: true,
+                        gravity: "top", // `top` or `bottom`
+                        position: "center", // `left`, `center` or `right`
+                        backgroundColor: "linear-gradient(to right, #a8e063, #56ab2f)",
+                        stopOnFocus: true, // Prevents dismissing of toast on hover
+                    }).showToast();
+
+            },
+            error: function (error) {
+                Toastify({
+                        text:error.responseJSON.message || 'حدث خطأ في إرسال تقييمك' ,
+                        duration: 3000,
+                        close: true,
+                        gravity: "top", // `top` or `bottom`
+                        position: "center", // `left`, `center` or `right`
+                        backgroundColor: "linear-gradient(to right, #f170a4, #f52a7c)",
+                        stopOnFocus: true, // Prevents dismissing of toast on hover
+                    }).showToast();
+
+                console.log(error)
+            }
+        })
+       })
+       $("#surveyElement").Survey({model: survey});
+        
+
+        </script>
+
+    <%- include('../partial/end.ejs') %>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Photo</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container mt-5">
+    <h1>Upload a Photo to Solve Equations</h1>
+    <form id="uploadForm" action="/photMathUpload" method="post" enctype="multipart/form-data">
+      <div class="mb-3">
+        <label for="photo" class="form-label">Choose a photo</label>
+        <input class="form-control" type="file" id="photo" name="photo" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
+    <div id="result" class="mt-3">
+      <!-- The result will be displayed here -->
+    </div>
+  </div>
+  <script>
+    document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: formData
+      });
+      const result = await response.json();
+      
+      // عرض الحل للمستخدم
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = '';
+      
+      // تحليل الرد وعرض الحل
+      if (result.preview && result.preview.groups) {
+        result.preview.groups.forEach(group => {
+          group.entries.forEach(entry => {
+            if (entry.preview && entry.preview.content && entry.preview.content.solution) {
+              const solution = entry.preview.content.solution;
+              if (solution.children && solution.children.length > 1) {
+                resultDiv.innerHTML += `<p><strong>Solution:</strong> ${solution.children[0].value} = ${solution.children[1].value}</p>`;
+              } else {
+                resultDiv.innerHTML += '<p>No valid solution found in the response.</p>';
+              }
+            } else {
+              resultDiv.innerHTML += '<p>No solution available for this entry.</p>';
+            }
+          });
+        });
+      } else {
+        resultDiv.innerText = 'No solution found';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<%- include ('./partial/head.ejs') %>
+    <link rel="stylesheet" href="/css/survey.css" />
+
+    <script lang="text/javascript" src="/library/jquery.min.js"> </script>
+    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+ -->
+    <script lang="text/javascript" src="/library/survey.jquery.min.js"> </script>
+    <script lang="text/javascript" src="/library/survey.jquery.theme.index.min.js"> </script>
+
+    </head>
+
+    <body class="container border border-info ">
+        <%- include ('./partial/navBar.ejs') %>
+            <div class="container border border-info">
+                <div class="row mt-5">
+
+                    <div class="col-lg-6">
+
+                        <div class="card shadow">
+                            <div class="card-header">
+                                <% if (user.isAdmin) { %>
+                                    <h2 class="fw-bold text-secondary">حساب المدير</h2>
+                                    <% }else { %>
+                                        <h2 class="fw-bold text-secondary">حساب الطالب</h2>
+                                        <% } %>
+                            </div>
+                            <div class="card-body p-4">
+
+                                <% if (error && error.length > 0) { %>
+                                    <div class="alert alert-danger">
+                                      <% error.forEach(function(err) { %>
+                                        <p><%= err %></p>
+                                      <% }); %>
+                                    </div>
+                                  <% } %>
+                                  
+                                  <% if (success && success.length > 0) { %>
+                                    <div class="alert alert-success">
+                                      <% success.forEach(function(msg) { %>
+                                        <p><%= msg %></p>
+                                      <% }); %>
+                                    </div>
+                                  <% } %>
+
+                                        <div class="text-center mb-3">
+                                            <% if (user.avatar) { %>
+                                                <img src="<%= user.avatar %>" alt="Profile Image" class="img-thumbnail"
+                                                    style="width: 150px; height: 150px;">
+                                                <% } %>
+
+                                        </div>
+                                        <form action="/upload-profile-image" method="post" enctype="multipart/form-data"
+                                            class="mb-4">
+                                            <div class="mb-3">
+                                                <label for="profileImage" class="form-label">ارفع صورة لحسابك</label>
+                                                <input class="form-control" type="file" id="profileImage"
+                                                    name="profileImage">
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Upload</button>
+                                        </form>
+                                        <table class="table table-striped">
+                                            <tr>
+                                                <th>اسم المستخدم</th>
+                                                <td>
+                                                    <%= user.userName %>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>الايميل</th>
+                                                <td>
+                                                    <%= user.email %>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>تاريخ الانشاء :</th>
+                                                <td>
+                                                    <%= user.createdAt %>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>تسجيل الخروج</th>
+                                                <td>
+                                                    <form action="/logout" method="post">
+                                                        <button type="submit" class="btn btn-danger">
+                                                            Log out
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+
+                                        </table>
+
+                                        <a class="border-info btn btn-outline-success nav-link" href="/forgotPassword">
+                                            <strong>إعادة تعيين كلمة المرور</strong>
+                                        </a>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                    
+                    <div class="col-lg-6">
+                        <div class="card shadow-lg">
+                            <div class="card-header">
+                                <h2 class="fw-bold text-secondary">تقييماتي</h2>
+                            </div>
+                            <div class="card-body p-4">
+                                <% if (feedbacks && feedbacks.length> 0) { %>
+                                    <div class="accordion" id="feedbackAccordion">
+                                        <% feedbacks.forEach((feedback, index)=> { %>
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header" id="heading<%= index %>">
+                                                    <button class="accordion-button" type="button"
+                                                        data-bs-toggle="collapse" data-bs-target="#collapse<%= index %>"
+                                                        aria-expanded="true" aria-controls="collapse<%= index %>">
+                                                        التقييم لدرس: <%= feedback.lesson.title %> (توقيت: <%=
+                                                                feedback.createdAt %>)
+                                                    </button>
+                                                </h2>
+                                                <div id="collapse<%= index %>" class="accordion-collapse collapse"
+                                                    aria-labelledby="heading<%= index %>"
+                                                    data-bs-parent="#feedbackAccordion">
+                                                    <div class="accordion-body">
+                                                        <div id="surveyElement<%= feedback.id %>"></div>
+                                                        <script>
+                                                            (function () {
+                                                                const surveyData = <%- feedback.rating ? JSON.stringify(feedback.rating) : '{}' %>;
+                                                                const surveyModel = new Survey.Model({
+                                                                    "pages": [{
+                                                                        "name": "rating-questions",
+                                                                        "elements": [{
+                                                                            "type": "rating",
+                                                                            "name": "well-prepared",
+                                                                            "title": "إلى أي مدى كانت تجربتك مع هذا الدرس جيدة ؟",
+                                                                            "rateType": "smileys",
+                                                                            "autoGenerate": false,
+                                                                            "rateCount": 4,
+                                                                            "rateValues": [
+                                                                                "يحتاج إلى تحسين ",
+                                                                                "راض عنه",
+                                                                                "جيد ",
+                                                                                "ممتاز"
+                                                                            ],
+                                                                            "minRateDescription": "يحتاج إلى تحسين ",
+                                                                            "maxRateDescription": "ممتاز"
+                                                                        },
+                                                                        {
+                                                                            "type": "comment",
+                                                                            "name": "comments",
+                                                                            "title": "أضف اقتراحات أو تعليقات",
+                                                                            "hideNumber": true,
+                                                                            "rows": 3,
+                                                                            "autoGrow": true
+                                                                        }
+                                                                        ]
+                                                                    }],
+                                                                    "showQuestionNumbers": "onPage",
+                                                                    "completeText": "Submit",
+                                                                    "firstPageIsStarted": true,
+                                                                    "widthMode": "static",
+                                                                    "width": "1200",
+                                                                    "headerView": "advanced"
+                                                                });
+                                                                surveyModel.data = surveyData;
+                                                                surveyModel.showTitle = false;
+                                                                surveyModel.showCompletedPage = true;
+                                                                surveyModel.showNavigationButtons = false;
+                                                                surveyModel.mode = "display";
+                                                                $('#surveyElement<%= feedback.id %>').Survey({
+                                                                    model: surveyModel
+                                                                });
+                                                            })();
+                                                        </script>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <% }) %>
+                                    </div>
+                                    <% } else { %>
+                                        <p>لا يوجد تقييمات بعد.</p>
+                                        <% } %>
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <%- include ('./partial/end.ejs') %>

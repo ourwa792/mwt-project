@@ -1,0 +1,30 @@
+<%- include('./partial/head.ejs') %>
+
+<style>
+  body {text-align: center;}
+</style>
+
+  </head>
+
+  <body class="container border border-info">
+    <%- include('./partial/navBar.ejs') %>
+    <div class="container mt-5">
+      <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">حدث خطأ</h4>
+        <p class="error-message">
+          <% if (error.status === 404) { %>
+            404 - الصفحة غير موجودة
+          <% } else { %>
+            <%= error.message %>
+          <% } %>
+        </p>
+        <% if (error.stack && error.status !== 404) { %>
+          <hr>
+          <pre class="text-left"><%= error.stack %></pre>
+          <pre class="text-left"><%= error.message %></pre>
+        <% } %>
+        <a href="/" class="btn btn-primary mt-3">العودة إلى الصفحة الرئيسية</a>
+      </div>
+    </div>
+
+    <% include('./partial/end.ejs') %>

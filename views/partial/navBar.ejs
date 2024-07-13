@@ -1,0 +1,84 @@
+<header>
+    <div class="px-3 py-2 bg-success text-white mt-3 border rounded-3">
+      <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+          <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
+            <li>
+              <a href="/" class="nav-link text-white">
+                <img src="/icon/iconHome.png" class="bi d-block mx-auto mb-1" width="34" height="34">
+                الرئيسية
+              </a>
+            </li>
+            <% if (user) { %>
+              <% if (user.isAdmin) { %>
+                
+                <li>
+                  <a href="/profile" class="nav-link text-white">
+                    <img src="/icon/iconProfile.png" class="bi d-block mx-auto mb-1" width="34" height="34">
+                    حسابي (مدير)
+                  </a>
+                </li>
+                <li>
+                  <a href="/admin/dashboard" class="nav-link text-white">
+                    <img src="/icon/iconDashBoard.jpg" class="bi d-block mx-auto mb-1" width="34" height="34">
+                    لوحة التحكم
+                  </a>
+                </li>
+        
+              <% } else { %>
+                <li>
+                  <a href="/profile" class="nav-link text-white">
+                    <img src="/icon/iconProfile.png" class="bi d-block mx-auto mb-1" width="34" height="34">
+                    حسابي
+                  </a>
+                </li>
+              <% } %>
+              <li>
+                <a href="#" class="nav-link text-white">
+                  <img src="/icon/iconQuiz.jpg" class="bi d-block mx-auto mb-1" width="34" height="34">
+                  اختبر نفسك
+                </a>
+              </li>
+              <li>
+                <a href="/videos" class="nav-link text-white">
+                  <img src="/icon/iconVideo.png" class="bi d-block mx-auto mb-1" width="34" height="34">
+                  جلسات مصورة
+                </a>
+              </li>
+              <li>
+                <a href="/resources" class="nav-link text-white">
+                  <img src="/icon/iconPaper.png" class="bi d-block mx-auto mb-1" width="34" height="34">
+                  مصادر تعليمية واوراق عمل
+                </a>
+              </li>
+              <li>
+                <a href="" class="nav-link text-white">
+                  <img src="/icon/iconQuestion.png" class="bi d-block mx-auto mb-1" width="34" height="34">
+                  أسأل سؤالك
+                </a>
+              </li>
+              <li>
+                <a href="" class="nav-link text-white">
+                  <img src="/icon/iconGame.png" class="bi d-block mx-auto mb-1" width="34" height="34">
+                  ألعاب تعليمية
+                </a>
+              </li>
+            <% } %>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="px-3 py-2 border rounded-3 my-3 border border-secondary">
+      <div class="container d-flex flex-wrap align-items-center justify-content-center">
+        <div class="text-end">
+          <% if (user) { %>
+            <a class="btn btn-light text-dark me-2 nav-link" href="/logout">Log-out</a>
+          <% } else { %>
+            <a class="btn btn-outline-success nav-link" href="/login">Login</a>
+            <a class="btn btn-outline-success nav-link" href="/register">Sign-up</a>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </header>
+  

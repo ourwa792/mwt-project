@@ -1,0 +1,93 @@
+<%- include('../partial/head.ejs') %>
+<script src="/library/chart.js"></script>
+<style>
+     .chart-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      overflow-x: auto;
+    }
+    .chart-canvas {
+      flex: 1;
+      max-width: 100%;
+    }
+</style>
+</head>
+<body class="container border border-info">
+<%- include('../partial/navBar.ejs') %>
+
+<div class="container-fluid">
+  <div class="row">
+    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+      <div class="position-sticky pt-3">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/add-student">إضافة طالب جديد</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/add-lesson">إضافة درس فيديو</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/admin/student-feedbacks">تقييمات الطلاب</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">تقييمات الطلاب</h1>
+      </div>
+
+      <div class="chart-container">
+        <canvas id="feedbackChart" class="chart-canvas" height="400"></canvas>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script> 
+  document.addEventListener('DOMContentLoaded', () => {
+    fetch('/admin/api/student-feedbacks')
+      .then(response => response.json())
+      .then(data => { 
+    
+        const ctx = document.getElementById('feedbackChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: data.labels,
+            datasets: [{
+              label: 'عدد التقييمات',
+              data: data.counts,
+              backgroundColor: 'rgba(75, 192, 192, 0.2)',
+              borderColor: 'rgba(75, 192, 192, 1)',
+              borderWidth: 2
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                beginAtZero: true
+              },
+              y: {
+                beginAtZero: true
+              }
+            },
+            plugins: {
+              legend: {
+                display: true,
+                position: 'top'
+              }
+            }
+          }
+        });
+    });
+  });
+</script> 
+
+<%- include('../partial/end.ejs') %>

@@ -1,0 +1,39 @@
+<%- include('../partial/head.ejs') %>
+<body>
+
+    <% if (error_msg && error_msg.length > 0) { %>
+        <div class="alert alert-danger">
+          <% error.forEach(function(err) { %>
+            <p><%= err %></p>
+          <% }); %>
+        </div>
+      <% } %>
+      
+      <% if (success_msg && success_msg.length > 0) { %>
+        <div class="alert alert-success">
+          <% success.forEach(function(msg) { %>
+            <p><%= msg %></p>
+          <% }); %>
+        </div>
+      <% } %>
+
+    <div class="container">
+        <h1 class="mt-5">Upload New Resource</h1>
+        <form action="/resources/upload" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="title">Resource Title</label>
+                <input type="text" class="form-control" id="title" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="file">Resource File</label>
+                <input type="file" class="form-control-file" id="file" name="file" required>
+            </div>
+            <div class="form-group">
+                <label for="thumbnail">Thumbnail (optional)</label>
+                <input type="file" class="form-control-file" id="thumbnail" name="thumbnail">
+            </div>
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+        <a href="/resources" class="btn btn-secondary mt-3">Back to Resources</a>
+    </div>
+<%- include('../partial/end.ejs') %>

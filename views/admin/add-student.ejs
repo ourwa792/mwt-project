@@ -1,0 +1,62 @@
+<%- include('../partial/head.ejs') %>
+  <!--   <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style> 
+    <link href="/css/signin.css" rel="stylesheet">  -->
+</head>
+<body class="container border border-info text-center">
+  
+    <main class="form-signin">
+        <% if (errorMessage) { %>
+            <div class="alert alert-danger" role="alert">
+                <strong><%= errorMessage %></strong>
+            </div>
+        <% } %>
+
+        <% if (success && success.length > 0) { %>
+            <div class="alert alert-success" role="alert">
+                <strong> <%= success[0] %> </strong>
+            </div>
+        <% } %>
+    
+        <form action="/admin/add-student" method="post" novalidate>
+            <h1 class="h3 mb-3 fw-normal">إضافة طالب</h1>
+            <div class="form-floating mb-3">
+                <input name="userName" type="text" id="username"
+                    class="form-control <%= validationErrors.find(e => e.path === 'userName') ? 'is-invalid' : '' %>"
+                    value="<%= oldInput.userName %>">
+                <label for="username">اسم المستخدم</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input name="email" type="email" id="email"
+                    class="form-control <%= validationErrors.find(e => e.path === 'email') ? 'is-invalid' : '' %>"
+                    value="<%= oldInput.email %>">
+                <label for="email">البريد الإلكتروني</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input name="password" type="password" id="password"
+                    class="form-control <%= validationErrors.find(e => e.path === 'password') ? 'is-invalid' : '' %>"
+                    value="<%= oldInput.password %>">
+                <label for="password">كلمة المرور</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input name="confirmPassword" type="password" id="confirmPassword"
+                    class="form-control <%= validationErrors.find(e => e.path === 'confirmPassword') ? 'is-invalid' : '' %>"
+                    value="<%= oldInput.confirmPassword %>">
+                <label for="confirmPassword">تأكيد كلمة المرور</label>
+            </div>
+            <button class="w-100 btn btn-lg btn-success" type="submit">إضافة طالب</button>
+        </form>
+    </main>
+<%- include('../partial/end.ejs') %>

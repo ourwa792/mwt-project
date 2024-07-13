@@ -1,0 +1,54 @@
+<%- include('../partial/head.ejs') %>
+
+  </head>
+
+  <body class="container border border-info ">
+    <%- include('../partial/navBar.ejs') %>
+    
+    <div class="container mt-5">
+      <h1 class="mb-4">Video Lessons</h1>
+      <div class="row">
+          <% videos.forEach(video => { %>
+              <div class="col-md-4">
+                  <div class="card mb-4">
+                      <img src="<%= video.thumbnailUrl %>" class="card-img-top" alt="<%= video.title %>">
+                      <div class="card-body">
+                          <h5 class="card-title"><%= video.title %></h5>
+                          <p class="card-text"><%= video.description %></p>
+                          <a href="/video/<%= video.id %>" class="btn btn-primary">Watch Now</a>
+                      </div>
+                  </div>
+              </div>
+          <% }); %>
+      </div>
+
+      <!-- Pagination -->
+      <nav aria-label="Page navigation">
+          <ul class="pagination">
+              <% if (hasPreviousPage) { %>
+                  <li class="page-item">
+                      <a class="page-link" href="/videos?page=<%= previousPage %>" aria-label="Previous">
+                          <span aria-hidden="true">&laquo;</span>
+                      </a>
+                  </li>
+              <% } %>
+
+              <% for (let i = 1; i <= lastPage; i++) { %>
+                  <li class="page-item <%= currentPage == i ? 'active' : '' %>">
+                      <a class="page-link" href="/videos?page=<%= i %>"><%= i %></a>
+                  </li>
+              <% } %>
+
+              <% if (hasNextPage) { %>
+                  <li class="page-item">
+                      <a class="page-link" href="/videos?page=<%= nextPage %>" aria-label="Next">
+                          <span aria-hidden="true">&raquo;</span>
+                      </a>
+                  </li>
+              <% } %>
+          </ul>
+      </nav>
+  </div>
+  
+
+    <%- include('../partial/end.ejs') %>

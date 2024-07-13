@@ -1,0 +1,90 @@
+<!-- المسار: /src/views/resources/upload.ejs -->
+
+<%- include('../partial/head.ejs') %>
+
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="mt-5">Upload New Resource</h1>
+        <form id="uploadForm" action="/resources/upload" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="title">Resource Title</label>
+                <input type="text" class="form-control" id="title" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="file">Resource File</label>
+                <input type="file" class="form-control-file" id="file" name="file" required>
+            </div>
+            <div class="form-group">
+                <label for="thumbnail">Thumbnail (optional)</label>
+                <input type="file" class="form-control-file" id="thumbnail" name="thumbnail">
+            </div>
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+        <a href="/resources" class="btn btn-secondary mt-3">Back to Resources</a>
+        <div id="progress" class="progress mt-3" style="display:none;">
+            <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%;"></div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#uploadForm').on('submit', function (e) {
+                e.preventDefault();
+                var formData = new FormData(this);
+                $.ajax({
+                    url: '/resources/upload',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    xhr: function () {
+                        var xhr = new window.XMLHttpRequest();
+                        xhr.upload.addEventListener('progress', function (evt) {
+                            if (evt.lengthComputable) {
+                                var percentComplete = evt.loaded / evt.total;
+                                percentComplete = parseInt(percentComplete * 100);
+                                $('#progress').show();
+                                $('#progress-bar').css('width', percentComplete + '%');
+                                $('#progress-bar').text(percentComplete + '%');
+                                if (percentComplete === 100) {
+                                    $('#progress').hide();
+                                }
+                            }
+                        }, false);
+                        return xhr;
+                    },
+                    success: function (data) {
+                        Toastify({
+                            text: "Resource uploaded successfully",
+                            duration: 3000,
+                            gravity: "top",
+                            position: "right",
+                            backgroundColor: "green",
+                            stopOnFocus: true
+                        }).showToast();
+                        setTimeout(function () {
+                            window.location.href = '/resources';
+                        }, 3000);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        Toastify({
+                            text: "Failed to upload resource. Please try again.",
+                            duration: 3000,
+                            gravity: "top",
+                            position: "right",
+                            backgroundColor: "red",
+                            stopOnFocus: true
+                        }).showToast();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+
+</html>

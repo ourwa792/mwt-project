@@ -1,0 +1,72 @@
+<%- include('./partial/head.ejs') %>
+
+  </head>
+
+  <body class="container border border-info ">
+    <%- include('./partial/navBar.ejs') %>
+
+      <div class="container-fluid pb-3 ">
+        <div class="d-grid gap-3" style="grid-template-columns: 2fr 1fr;">
+          <div class="bg-light border rounded-3 border border-info">
+            <img height="100%" width="100%" src="image/panner/panner1.png">
+          </div>
+
+          <div class="bg-light border rounded-3">
+            <img height="100%" width="100%" src="image/panner/panner2.jpg">
+
+          </div>
+        </div>
+      </div>
+
+      <!--   =========================================  -->
+
+      <h1>قائمة الدروس
+        <% if (error && error.length > 0) { %>
+          <div class="alert alert-danger">
+            <% error.forEach(function(err) { %>
+              <p><%= err %></p>
+            <% }); %>
+          </div>
+        <% } %>
+        
+      </h1>
+      <div class="album py-5 bg-light">
+        <div class="container">
+          <div class="row row-cols-1 row-cols-sm-2 ">
+
+            <% if (lesson.length> 0) { %>
+              <% lesson.forEach(lesn => { %>
+                <div class="col-sm-4 my-3">
+                  <div class="card shadow-sm border-success">
+                    <img src="<%=lesn.cover  %>" class="card-img-top border border-2 rounded-3" alt="image">
+
+                    <div class="card-body border border-2 rounded-3 ">
+                      <p class="card-text"> الصف: <%= lesn.grade %>
+                      </p>
+                      <p class="card-text">اسم الدرس: <%= lesn.title %>
+                      </p>
+                      <p class="card-text">القسم: <%= lesn.category.name %>
+                      </p>
+                      <div class="d-flex justify-content-between align-items-center">
+
+                        <a href="/lesson/<%= lesn.id %>" role="button" class="btn btn-sm btn-outline-info ">عرض</a>
+                        
+                        <% if (user) { %>
+                        <a href="/lesson/<%= lesn.id %>/rate" role="button" class="btn btn-sm btn-outline-info ">تقييم</a>
+                        <% } %>
+                        
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <% })} else { %>
+
+                  <h1>لا يوجد دروس</h1>
+                  <% } %>
+          </div>
+        </div>
+      </div>
+
+      <%- include('./partial/pagination.ejs') %>
+
+        <%- include('./partial/end.ejs') %>

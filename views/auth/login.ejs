@@ -1,0 +1,64 @@
+<%- include('../partial/head.ejs') %>
+
+
+
+    <!-- Custom styles for this template -->
+    <link href="css/signin.css" rel="stylesheet">
+    </head>
+
+
+    <body class="container border border-info text-center my-3 ">
+        <header>
+            <div class="px-3 py-2 border rounded-3 my-3 border border-secondary">
+                <div class="container d-flex flex-wrap align-items-center justify-content-center">
+                  <div class="text-end">
+                    <% if (user) { %>
+                      <a class="btn btn-light text-dark me-2 nav-link" href="/logout">تسجيل الدخول</a>
+                    <% } else { %>
+                      <a class="btn btn-outline-success nav-link" href="/register">التسجيل </a>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+        </header>
+
+        <main class="form-signin">
+            <% if (success && success.length > 0) { %>
+               <div class="alert alert-success" role="alert">
+                    <strong> <%= success[0] %></strong>
+               </div> 
+            <% } %>
+        
+            <% if( errorMessage){ %>
+                <div class="alert alert-danger" role="alert">
+                    <strong> <%= errorMessage %></strong>
+                </div>
+            <% } %>    
+            <% if(error && error.length > 0){ %>
+                <div class="alert alert-danger" role="alert">
+                    <strong> <%= error[0] %> </strong>
+                </div>
+            <% } %>    
+
+            <form action="/login" method="post" novalidate>
+
+                <h1 class="h3 mb-3 fw-normal"> تسجيل الدخول  </h1>
+
+                <div class="form-floating mb-3">
+                    <input name="email" type="email" id="email"
+                       class="form-control <% if (errorMessage) { %> <%= 'is-invalid' %><% } %>" 
+                        value="<%= oldInput.email %>">
+                    <label for="email">البريد الالكتروني</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input name="password" type="password" id="password"
+                    class="form-control <% if (errorMessage) { %> <%= 'is-invalid' %><% } %>" 
+                        value="<%= oldInput.password %>">
+                    <label for="password">كلمة المرور</label>
+                </div>
+                <button class="w-100 btn btn-lg btn-success" type="submit">ادخل</button>
+
+            </form>
+        </main>
+
+<%- include('../partial/end.ejs') %>

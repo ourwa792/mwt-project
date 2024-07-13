@@ -1,0 +1,17 @@
+.pagination .page-link {
+    color: green
+}
+
+.pagination .page-link:hover {
+    color: aqua
+}
+
+.pagination .page-item.active .page-link{
+    background-color: green;
+    border-color: green;
+    color: white
+}
+
+.pagination .page-item.disabled .page-link {
+    color: grey
+}
