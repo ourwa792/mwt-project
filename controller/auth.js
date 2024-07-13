@@ -1,19 +1,19 @@
-const User = require("../model/user");
-const bcrypt = require("bcryptjs");
+const User = require('../model/user');
+const bcrypt = require('bcryptjs');
 
-const { mailerReset } = require("../utils/mailer");
-const { validationResult, body } = require("express-validator"); //بتجمع كل الاخطاء من الروتر
-const { Op } = require("sequelize");
+const { mailerReset } = require('../utils/mailer');
+const { validationResult, body } = require('express-validator'); //بتجمع كل الاخطاء من الروتر
+const { Op } = require('sequelize');
 
 exports.getSign = (req, res, next) => {
   //console.log(req.session)
-  res.render("auth/signup", {
-    pageTitle: "SignUP",
+  res.render('auth/signup', {
+    pageTitle: 'SignUP',
     oldInput: {
-      userName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
+      userName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
     },
     validationErrors: [],
   });
@@ -24,8 +24,8 @@ exports.postSign = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors.array());
-    return res.status(422).render("auth/signup", {
-      pageTitle: "sign-up",
+    return res.status(422).render('auth/signup', {
+      pageTitle: 'sign-up',
       errorMessage: errors.array()[0].msg, // [{type: 'field',value: 'tes',msg: 'Invalid value',path: 'email',location: 'body'}]
       oldInput: {
         userName: userName,
@@ -41,8 +41,8 @@ exports.postSign = async (req, res, next) => {
       where: { email },
     });
     if (userExist) {
-      req.flash("error", "الايميل موجود بالفعل");
-      return res.redirect("/register");
+      req.flash('error', 'الايميل موجود بالفعل');
+      return res.redirect('/register');
     }
     const hashedPassword = await bcrypt.hash(password, 8);
 
@@ -52,22 +52,22 @@ exports.postSign = async (req, res, next) => {
       password: hashedPassword,
     });
     await user.save();
-    req.flash("success", " تم تسجيلك بنجاح  بإمكانك المتابعة");
-    res.redirect("/login");
+    req.flash('success', ' تم تسجيلك بنجاح  بإمكانك المتابعة');
+    res.redirect('/login');
   } catch (error) {
     console.error(error);
-    req.flash("error", "some thing went error");
-    res.redirect("/register");
+    req.flash('error', 'some thing went error');
+    res.redirect('/register');
   }
 };
 
 exports.getLogIn = (req, res, next) => {
-  res.render("auth/login", {
-    pageTitle: "login page",
+  res.render('auth/login', {
+    pageTitle: 'login page',
     //errorMessage:
     oldInput: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   });
 };
@@ -82,14 +82,14 @@ exports.postLogIn = async (req, res, next) => {
     if (user && (await bcrypt.compare(password, user.password))) {
       console.log(user);
       req.session.user = user;
-      req.session.save()
-      res.redirect("/profile");
+      req.session.save();
+      res.redirect('/profile');
     } else {
       //req.flash("error", " إحدى المدخلات غير صحيحة ");
       //res.redirect("/login");
-      res.status(422).render("auth/login", {
-        pageTitle: "login page",
-        errorMessage: "إحدى المدخلات غير صحيحة", // هي هيي تبع الفلاش
+      res.status(422).render('auth/login', {
+        pageTitle: 'login page',
+        errorMessage: 'إحدى المدخلات غير صحيحة', // هي هيي تبع الفلاش
         oldInput: {
           email: email,
           password: password,
@@ -98,15 +98,16 @@ exports.postLogIn = async (req, res, next) => {
     }
   } catch (error) {
     console.error(error);
-    req.flash("error", "some thing went wrong");
-    res.redirect("/login");
+    req.flash('error', 'some thing went wrong');
+    res.redirect('/login');
   }
 };
 
 exports.getForgotPassword = (req, res, next) => {
-  res.render("auth/forgotPassword", {
-    pageTitle: "forgot Passwod",
+  res.render('auth/forgotPassword', {
+    pageTitle: 'forgot Passwod',
     validationErrors: [],
+    message: { error: req.flash('error'), success: req.flash('success') },
   });
 };
 
@@ -121,9 +122,9 @@ exports.postForgotPassword1 = async (req, res) => {
       errorMessage: errors.array()[0].msg, // [{type: 'field',value: 'tes',msg: 'Invalid value',path: 'email',location: 'body'}]
       validationErrors: errors.array(), //نغيير الستايل المشروط كل الاخطاء مرتبطة بالفيو بشرط
     }); */
-    return res.status(422).render("auth/forgotPassword", {
-      pageTitle: "Forgot Password",
-      errorMessage: req.flash("error"),
+    return res.status(422).render('auth/forgotPassword', {
+      pageTitle: 'Forgot Password',
+      errorMessage: req.flash('error'),
       validationErrors: errors.array(),
     });
   } else {
@@ -131,7 +132,7 @@ exports.postForgotPassword1 = async (req, res) => {
       const user = await User.findByEmail(email);
       console.log(user);
       if (user === null) {
-        req.flash("error", "لا يوجد مستخدم بهذا الايميل");
+        req.flash('error', 'لا يوجد مستخدم بهذا الايميل');
         /* res.render("auth/forgotPassword",{
           pageTitle: "forgotPassword",
           validationErrors: [],
@@ -141,8 +142,8 @@ exports.postForgotPassword1 = async (req, res) => {
       user.token = token;
       await user.save();
     } catch (error) {
-      console.error("error", "some thing went wrong");
-      res.redirect("/forgotPassword");
+      console.error('error', 'some thing went wrong');
+      res.redirect('/forgotPassword');
     }
   }
 };
@@ -157,16 +158,16 @@ exports.postForgotPassword = async (req, res) => {
     });
   }
 
-  if (email !== req.session.user.email) {
+  if (req.session.user && email !== req.session.user.email) {
     //console.log (email+'-------------------------'+ req.session.user.email)
-    return res.json({ errorMessage: "هذا الايميل ليس مخصص لك" });
+    return res.json({ errorMessage: 'هذا الايميل ليس مخصص لك' });
   }
 
   try {
     const user = await User.findByEmail(email);
     if (!user) {
       return res.status(422).json({
-        errorMessage: "لا يوجد مستخدم بهذا الايميل",
+        errorMessage: 'لا يوجد مستخدم بهذا الايميل',
         validationErrors: [],
       });
     }
@@ -175,25 +176,23 @@ exports.postForgotPassword = async (req, res) => {
     user.resetToken = token;
     user.resetTokenExpration = Date.now() + 3600000;
     await user.save();
-    console.log("---------- token is ----------" + token);
-    console.log("------------user is -----------" + user);
+    console.log('---------- token is ----------' + token);
+    console.log('------------user is -----------' + user);
     console.log(
-      "------------tokenExpirarion is -----------" + user.resetTokenExpration
+      '------------tokenExpirarion is -----------' + user.resetTokenExpration
     );
 
     await mailerReset(email, token);
 
-    return res
-      .status(200)
-      .json({
-        successMessage:
-          "تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني",
-      });
+    return res.status(200).json({
+      successMessage:
+        'تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني',
+    });
   } catch (error) {
-    console.error("Error", error);
+    console.error('Error', error);
     return res
       .status(500)
-      .json({ errorMessage: "حدث خطأ ما، يرجى المحاولة مرة أخرى" });
+      .json({ errorMessage: 'حدث خطأ ما، يرجى المحاولة مرة أخرى' });
   }
 };
 
@@ -206,21 +205,21 @@ exports.getResetPassword = async (req, res) => {
     },
   });
   if (!user) {
-    req.flash("error", "انتهت فترة صلاحية هذا الرابط");
-    return res.redirect("/forgotPassword");
+    req.flash('error', 'انتهت فترة صلاحية هذا الرابط');
+    return res.redirect('/forgotPassword');
   }
-  res.render("auth/resetPassword", {
-    pageTitle: "Reset Password",
+  res.render('auth/resetPassword', {
+    pageTitle: 'Reset Password',
     token: token,
-    oldInput: { password: "" },
+    oldInput: { password: '' },
     validationErrors: [],
-    message: { error: req.flash("error"), success: req.flash("success") },
+    message: { error: req.flash('error'), success: req.flash('success') },
   });
 };
 
 exports.postResetPassword = async (req, res) => {
   const { password, confirmPassword, token } = req.body;
- /*  if (!password || !confirmPassword) {
+  /*  if (!password || !confirmPassword) {
     req.flash("error", "جميع الحقول مطلوبة");
     return res.redirect(`/reset-password/${token}`);
     //return res.status(422).json({ errorMessage: 'جميع الحقول مطلوبة!' });
@@ -239,24 +238,24 @@ exports.postResetPassword = async (req, res) => {
     });
 
     if (!user) {
-      req.flash("error", "الرمز غير صالح !");
-      return res.status(422).json({ errorMessage: "الرمز غير صالح !" });
+      req.flash('error', 'الرمز غير صالح !');
+      return res.status(422).json({ errorMessage: 'الرمز غير صالح !' });
     }
 
     user.password = await bcrypt.hash(password, 8);
     user.resetToken = null;
     user.resetTokenExpration = null;
     await user.save();
-    req.flash("success", "تم تغيير كلمة المرور بنجاح");
-    res.redirect("/login");
+    req.flash('success', 'تم تغيير كلمة المرور بنجاح');
+    res.redirect('/login');
   } catch (error) {
     console.error(error);
-    req.flash("error", "Some thing went wrong");
+    req.flash('error', 'Some thing went wrong');
     res.redirect(`/reset-password/${token}`);
   }
 };
 
 exports.logout = (req, res, next) => {
   req.session.destroy();
-  res.redirect("/login");
+  res.redirect('/login');
 };

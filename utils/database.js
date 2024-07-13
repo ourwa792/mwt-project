@@ -1,16 +1,16 @@
-require('dotenv').config()
-const Sequelize = require("sequelize");
+require('dotenv').config();
+const Sequelize = require('sequelize');
 
-const seq = new Sequelize("mwt_test", "root", "12345", {
-  dialect: "mysql",
-  host: "localhost",
-}); 
+const seq = new Sequelize('mwt_test', 'root', '12345', {
+  dialect: 'mysql',
+  host: 'localhost',
+});
 
 Database = (async () => {
   try {
     // Verify that database connection is valid
     await seq.authenticate();
-    console.log("DB Created Successfuly .. ");
+    console.log('DB Created Successfuly .. ');
     // Drops existing tables if there are any
     await seq.sync({ alter: true });
   } catch (e) {
@@ -18,4 +18,4 @@ Database = (async () => {
   }
 })();
 
-module.exports = { Database , seq }
+module.exports = { Database, seq };
